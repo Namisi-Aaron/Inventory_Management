@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
-from django.http import HttpResponse
+from .filters import ItemFilter
 from .forms import AddItemForm
 from .models import Item
 
@@ -20,8 +20,10 @@ from .models import Item
 
 def home(request):
     items = Item.objects.order_by('-purchase_date')
+    item_filter = ItemFilter(request.GET, queryset=items)
     context = {
-        "items": items
+        'filter': item_filter,
+        'items': item_filter.qs,
     }
     return render(request, 'ecommerce/home.html', context)
 
